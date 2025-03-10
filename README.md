@@ -19,6 +19,9 @@ This is my repo for **STATS 220**
 - I am taking STATS 220 because when I was choosing my subjects for this year, reading about this course seemed to be one of the more interesting courses for stats. Through the first week I seem to have choosen correctly. So, we shall see in a couple weeks...
 - I am interested in learning about stats in general as ever since 2022 Year 12 high school stats I have *loved* studying stats.
 
+## Course Goals
+1. sjs
+   
 ## My Current University Mood
   A meme that captures how I currently feel about my university studies:
   
