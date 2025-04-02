@@ -1,0 +1,98 @@
+---
+title: "Investigating TikTok's Algorithm: Trends in Engagement and Content"
+author: "Sophie Jones 224910734"
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+library(tidyverse)
+```
+
+```{css}
+h2 {
+  color: #FF66CC
+}
+body {
+  background-color:#fff0f5;
+  color: #E75480
+}
+
+.p2 {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+```
+
+## What's going on with this data?
+
+In the graph "Number of Videos per Category", I observed 26.2% of the videos viewed on TikTok are advertisement. This means that out of 103 videos analysed, 27 were advertisements, making up 26.2% of the total. This suggests that, on average, TikTok presents an advertisement roughly every third or fourth video. This trend is further supported by "Number of Videos by Creator Type" bar graph, which shows that 30 out of 103 video were created by companies promoting their products.
+
+Additionally, the "Distribution of Number of Hashtages" histogram suggests a right skewed distribution as the peak of the graph lies on the left side of the centre. The mean amount of hashtags in a caption is 4.4 hashtags or between 4 and 5 hashtags. There is one outlier on the graph was a number of 42 hashtags. However, when analysing this graph I can confidently predict that the TikTok algorithm is more likely to promote less hashtaged videos than videos that contain a large number of hashtags in their videos. This is not what I had hypothesized at the beginning.
+
+```{r}
+logged_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vQm1l_msHppJowoxK81tEgK9yVUNRhsXDkgQ4ziX5uK_kb_GCAQdnwQEeFVlE7h4r177GOgAiV0zsFJ/pub?output=csv")
+
+# rename variables
+lastest_data <- logged_data %>%
+  rename(
+    description = `Description Of Video`,
+    likes = `How Many Likes Does The Video Have?`,
+    hashtags = `How Many Hashtags Are In The Video Description?`,
+    video_length = `How Long Is The Video?`,
+    category = `What Category Does The Video Belong To?`,
+    creator_type = `Who Created The Video?`)
+
+# summary for likes, hashtags, and video length
+summary_values <- lastest_data %>%
+  summarise(
+    min_likes = min(likes, na.rm = TRUE),
+    max_likes = max(likes, na.rm = TRUE),
+    mean_likes = mean(likes, na.rm = TRUE),
+    min_hashtags = min(hashtags, na.rm = TRUE),
+    max_hashtags = max(hashtags, na.rm = TRUE),
+    mean_hashtags = mean(hashtags, na.rm = TRUE),
+    min_videolength = min(video_length, na.rm = TRUE),
+    max_videolength = max(video_length, na.rm = TRUE),
+    mean_videolength = mean(video_length, na.rm = TRUE)
+  )
+
+# show the summary
+print(summary_values)
+
+# Graphs
+lastest_data %>%
+  ggplot() +
+  geom_bar(aes(x = category), fill = "pink") +
+  labs(title = "Number of Videos per Category", caption = "Source: TikTok",
+       x = "category", y = "number")
+
+ggplot(lastest_data, aes(x = creator_type)) +
+  geom_bar(fill = "blue") +
+  labs(title = "Number of Videos by Creator Type", x = "Creator Type", y = "Number")
+
+ggplot(lastest_data, aes(x = hashtags)) +
+  geom_histogram(binwidth = 1, fill = "red", color = "black") +
+  labs(title = "Distribution of Number of Hashtages", x = "Number of Hastags", y = "Percentage")
+
+paste("the video with the most hashtags has", summary_values$max_hashtags, "hashtags, while the video with the fewest hashtags has", summary_values$min_hashtags, "hashtags. One average, video have", round(summary_values$mean_hashtags, 2), "hashtags.")
+
+# Advertisement Videos
+ad_count <- lastest_data %>%
+  filter(category == "Advertisement") %>%
+  summarise(total_ads = n())
+
+
+total_videos <-  nrow(lastest_data)
+ad_percentage <- (ad_count$total_ads / total_videos) * 100
+
+
+print(paste("out of", total_videos, "videos,",
+            ad_count$total_ads, "were advertisements, making up",
+            round(ad_percentage, 2), "% of the total."))
+
+
+
+```
+
